@@ -1,0 +1,10 @@
+# Intel Copyright © 2021, Intel Corporation.
+
+docs:
+  - "*.md"
+  - "docs/**/*"
+build:
+  - "Dockerfile"
+  - "Makefile"
+ci:
+  - .github/**/*

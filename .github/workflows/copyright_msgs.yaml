@@ -1,0 +1,21 @@
+# Intel Copyright © 2021, Intel Corporation.
+
+name: Copyright messages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  copyright:
+    name: Check copyrights
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: check copyright messages
+        run: .github/scripts/check-copyright.sh

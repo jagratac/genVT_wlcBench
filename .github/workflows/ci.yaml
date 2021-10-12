@@ -1,0 +1,36 @@
+# Intel Copyright © 2021, Intel Corporation.
+
+name: CI
+
+on:
+  push:
+    branches: [main, test]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: Check formatting
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check formatting
+        run: make check
+
+  build:
+    name: Check build is passing
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: make
+      - name: Deploy
+        run: make deploy
+
+  test:
+    name: Check tests are passing
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test
+        run: make test
