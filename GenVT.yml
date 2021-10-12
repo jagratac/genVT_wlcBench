@@ -1,0 +1,33 @@
+breakpoint_serial:
+ vm_0:
+         {
+             os_image: /gos_images/ubuntu_0.qcow2,
+             vm_name: ubuntu-vm-0,
+             os_name: linux,
+
+             proxy_wl:
+             [    
+                {
+                 wl: synbench,
+                 profile_name: high,
+                 init_cmd: ./init.sh synbench ,
+                 start_cmd: /home/sanjana/gfx/synbench/synbench /home/sanjana/gfx/synbench/params/intel_indu_hmi_high_profile.txt,
+                 stop_cmd: null,
+                 instances: 1,
+                }
+             ]
+          }
+ vm_1:
+         [
+              
+             os_image: /gos_images/ubuntu_1.qcow2,
+             vm_name: ubuntu-vm-1,
+             
+             {
+                 wl: synbench,
+                 profile_name: high,
+                 start_cmd: /home/sanjana/gfx/synbench/synbench /home/sanjana/gfx/synbench/params/intel_indu_hmi_high_profile.txt,
+                 stop_cmd: null,
+                 instances: 1,
+             }
+         ]
