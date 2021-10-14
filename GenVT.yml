@@ -11,7 +11,7 @@ breakpoint_serial:
                  wl: synbench,
                  profile_name: high,
                  init_cmd: ./init.sh synbench ,
-                 start_cmd: /home/sanjana/gfx/synbench/synbench /home/sanjana/gfx/synbench/params/intel_indu_hmi_high_profile.txt,
+                 start_cmd: cd GenVT_Env/synbench && ./synbench_guest.sh ,
                  stop_cmd: null,
                  instances: 1,
                 }

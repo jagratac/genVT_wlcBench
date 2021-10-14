@@ -11,6 +11,7 @@ import netifaces as ni
 #opening connection from hypervisor 
 try:
     conn = libvirt.open('qemu:///system')
+    f = open("guest.yml", mode = 'w', encoding = 'utf-8')
     os.system("clear")
 except libvirt.libvirtError as e:
     print(repr(e),file=sys.stderr)
@@ -48,9 +49,6 @@ os_name = parser.get("os_name",vm)
 wl_info = parser.get("proxy_wl",vm)
 workload_name = wl_info[0]['wl']
 init_cmd = wl_info[0]['init_cmd']
-print(workload_name)
-print(os_name)
-print(init_cmd)
 
 
 
@@ -65,9 +63,16 @@ try:
 #            print("Can Not boot guest domain {file=sys.stderr}")
 except Exception:
     print("Can Not boot guest domain {file=sys.stderr}")
-    
 
+uuid = dom.UUIDString()
 print(f"system : {dom.name()}  booted, file=sys.stderr")
+
+vm_0 = {'vm_name':vm_name,'vm_uuid':uuid,'host_ip':ip}
+
+# Aregument file creation for guest
+for x,y in vm_0.items():
+    f.write(f"{x} : {y}\n")
+f.close()
 
 print(f"Sleep for 20 second")
 time.sleep(20)

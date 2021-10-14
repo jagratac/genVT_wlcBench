@@ -10,7 +10,6 @@ import tty
 import termios
 import atexit
 import libvirt_ipaddress as guest_ip
-import genvt_ssh as ssh
 from argparse import ArgumentParser
 from typing import Optional  # noqa F401
 
@@ -39,6 +38,7 @@ class Console(object):
         self.run_console = True
         self.stdin_watch = -1
         self.args = args
+        self.f = open("ipaddress.yml", mode = 'w',encoding = 'utf-8')
         logging.info("%s initial state %d, reason %d",
                      self.name, self.state[0], self.state[1])
 
@@ -94,23 +94,28 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
         for login_str in char_data.rsplit():
             if login_str == 'wlc@wlc-ubuntu:~$' and stream_callback.cmd_flag == 1:
                 console.stream.send(b"echo wlc123 | sudo -S mount -t 9p -o trans=virtio,version=9p2000.L mytag /mnt\n")
-                console.stream.send(b"sudo rm -r synbench \n")
+                console.stream.send(b"sudo rm -r GenVT_Env \n")
+                console.stream.send(b"mkdir GenVT_Env \n")
                 ipaddress = guest_ip.Guest_IPAddress(console.domain)
                 init_cmd = console.args[0][0]['init_cmd']
-                try:
-                    f = open("ipaddress.txt", mode = 'w',encoding = 'utf-8')
-                    f.write(f"{vm_name}:={ipaddress} \n")
-                        # perform file operations
-                finally:
-                    f.close()
+                start_cmd = console.args[0][0]['start_cmd']
+#                print(console.args)
+                vm_info = {'vm_name':vm_name,'guest_ip':ipaddress,'login':'wlc','password':'wlc123'}
+
+                # Aregument file creation for guest
+                for x,y in vm_info.items():
+                    console.f.write(f"{x} : {y}\n")
+                console.f.close()
                 os.system(f"{init_cmd}")
+                os.system("./init.sh guest.yml")
+#                os.system(f"{start_cmd}")
 #                os.system(f"python3 libvirt_ipaddress_test.py GenVT.yml")
                 #console.stream.send(b"sudo [ ! -d '/home/wlc/test' ] && mkdir test && cd test\n")
                 #console.stream.send(b"sudo cp /mnt/Gen_VT.sh .\n")
-#                console.stream.send(b"cd test\n")
+                console.stream.send(start_cmd.encode())
 #                console.stream.send(b"./Gen_VT.sh")
 #                console.stream.send(vm_name.encode())
-#                console.stream.send(b"\n")
+                console.stream.send(b"\n")
                 login_data.clear()
                 stream_callback.cmd_flag = 2
 
