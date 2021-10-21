@@ -1,38 +1,12 @@
-#!/bin/bash -x
-
-export http_proxy="http://proxy-chain.intel.com:911"
-export https_proxy="http://proxy-chain.intel.com:911"
-export ftp_proxy="http://proxy-chain.intel.com:911"
-export no_proxy="localhost,127.0.0.1/8,.ka.intel.com,.ir.intel.com,devtools.intel.com"
-
-echo wlc123 | sudo -S apt-get update -y
-sudo apt install mosquitto mosquitto-clients -y
-#sudo systemctl status mosquitto
-sudo apt install openssl libssl-dev -y
-sudo apt-get install libglew-dev -y
-sudo apt-get install libsdl2-dev -y
-sudo apt-get install libglm-dev -y
-sudo apt install git-all -y
-
-# git configuration
-#sudo mkdir ~/bin
-#sudo cp /mnt/git-proxy ~/bin
-#sudo git config --global core.gitProxy ${HOME}/bin/git-proxy
-#sudo chmod +x ${HOME}/bin/git-proxy
-
-# building MQTT
-cd GenVT_Env
-sudo git clone https://github.com/eclipse/paho.mqtt.c.git
-cd paho.mqtt.c
-sudo make
-sudo rm /usr/local/lib/libpaho-mqtt3*
-sudo make install
-cd ..
-
-sudo git clone https://gitlab.devtools.intel.com/OWR/IoTG/GMS/Yocto/Graphics/GraphicsVirtualization/synbench.git
-cd synbench
-sudo git checkout hmi_proxy
-export DESTDIR=$PWD
-export DISPLAY=:0
-sudo make
-./synbench params/intel_indu_hmi_high_profile.txt
+#!/bin/bash
+#if [ -z $@ ];then
+#    echo "syntex:./synbench.sh cmd"
+#    echo $1
+#    exit
+#fi
+python3 genvt_ssh_2.py 'cd ${HOME}/GenVT_Env/synbench/ && ./synbench_guest.sh'
+#sleep 5
+python3 genvt_ssh_2.py 'cd ${HOME}/GenVT_Env/synbench/ && ./mqtt_build.sh'
+#sleep 5
+python3 genvt_ssh_2.py 'cd ${HOME}/GenVT_Env/synbench/ && ./synbench_build.sh'
+#python3 demo_ssh.py

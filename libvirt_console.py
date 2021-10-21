@@ -12,6 +12,7 @@ import atexit
 import libvirt_ipaddress as guest_ip
 from argparse import ArgumentParser
 from typing import Optional  # noqa F401
+import subprocess
 
 login_data = []
 un_data = []
@@ -99,7 +100,6 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
                 ipaddress = guest_ip.Guest_IPAddress(console.domain)
                 init_cmd = console.args[0][0]['init_cmd']
                 start_cmd = console.args[0][0]['start_cmd']
-#                print(console.args)
                 vm_info = {'vm_name':vm_name,'guest_ip':ipaddress,'login':'wlc','password':'wlc123'}
 
                 # Aregument file creation for guest
@@ -108,16 +108,27 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
                 console.f.close()
                 os.system(f"{init_cmd}")
                 os.system("./init.sh guest.yml")
-#                os.system(f"{start_cmd}")
-#                os.system(f"python3 libvirt_ipaddress_test.py GenVT.yml")
-                #console.stream.send(b"sudo [ ! -d '/home/wlc/test' ] && mkdir test && cd test\n")
-                #console.stream.send(b"sudo cp /mnt/Gen_VT.sh .\n")
-                console.stream.send(start_cmd.encode())
+#                start_cmd = start_cmd.split()
+#                print(start_cmd)
+#                os.system("python3 genvt_ssh.py 'cd ${HOME}/GenVT_Env/synbench/ && ./Gen_VT.sh'")
+
+#                os.system("python3 genvt_ssh.py 'cd ${HOME}/GenVT_Env/synbench/ && ./mqtt_build.sh'")
+#
+#                os.system("python3 genvt_ssh.py 'cd ${HOME}/GenVT_Env/synbench/ && ./synbench_build.sh'")
+                os.system(f"{start_cmd}")
+#                console.stream.send(b"sudo [ ! -d '/home/wlc/test' ] && mkdir test && cd test\n")
+#                console.stream.send(b"sudo cp /mnt/Gen_VT.sh .\n")
+#                for i in range(0,2):
+#                    console.stream.send(start_cmd.encode())
+#                    console.stream.send(b"\n")
+#                console.stream.send(start_cmd.encode())
 #                console.stream.send(b"./Gen_VT.sh")
 #                console.stream.send(vm_name.encode())
-                console.stream.send(b"\n")
+#                console.stream.send(b"\n")                
                 login_data.clear()
                 stream_callback.cmd_flag = 2
+#                console.run_console = False
+#                return
 
 
 

@@ -4,7 +4,9 @@ import xml_parsing_main as xml
 import time
 import os
 import getpass
+import threading
 import libvirt_console as console_vm
+import genvt_ssh as guest_ssh
 from yml_parser import YAMLParser
 import netifaces as ni
 
@@ -19,12 +21,12 @@ except libvirt.libvirtError as e:
 
 #geting user name of host machine
 username = getpass.getuser()
-print("Username of Host machine:{}".format(username))
+print("\r\nusername of Host machine:{}".format(username))
 
 #geting ip address of host machine
 ni.ifaddresses('virbr0')
 ip = ni.ifaddresses('virbr0')[ni.AF_INET][0]['addr']
-print("IP Address of Host machine:{}".format(ip))
+print("\r\nIP Address of Host machine:{}".format(ip))
 
 # Check arguments
 if len(sys.argv) != 2:
@@ -57,7 +59,7 @@ try:
     for vm_count in range(0,1):
         xml.vm_xml_create(vm_count,vm_name,os_image)
         f_xml = open(f'vm_{vm_count}.xml','r')
-        dom = conn.createXML(f_xml.read(),2)
+        dom = conn.createXML(f_xml.read(),0) #2 conncetion closed means, vm should be closed. 0 means no such dependency
 #        dom = conn.defineXMLFlags(f_xml.read(),0)
 #        if dom.create() < 0:
 #            print("Can Not boot guest domain {file=sys.stderr}")
@@ -65,7 +67,7 @@ except Exception:
     print("Can Not boot guest domain {file=sys.stderr}")
 
 uuid = dom.UUIDString()
-print(f"system : {dom.name()}  booted, file=sys.stderr")
+print(f"\r\nsystem : {dom.name()}  booted, file=sys.stderr")
 
 vm_0 = {'vm_name':vm_name,'vm_uuid':uuid,'host_ip':ip}
 
@@ -74,7 +76,7 @@ for x,y in vm_0.items():
     f.write(f"{x} : {y}\n")
 f.close()
 
-print(f"Sleep for 20 second")
+print(f"\r\nSleep for 20 second")
 time.sleep(20)
 
 #console call for created VM
@@ -84,5 +86,10 @@ console.stdin_watch = libvirt.virEventAddHandle(0, libvirt.VIR_EVENT_HANDLE_READ
 while console_vm.check_console(console):
     libvirt.virEventRunDefaultImpl()
 #dom.destroy()
+x = threading.Thread(target=guest_ssh.ssh_guest, args=('cd ${HOME}/GenVT_Env/synbench/ && ./Gen_VT.sh',))
+x.start()
+x.join()
+#guest_ssh.ssh_guest('cd ${HOME}/GenVT_Env/synbench/ && ./Gen_VT.sh')
+#time.sleep(30)
 conn.close()
 exit(0)

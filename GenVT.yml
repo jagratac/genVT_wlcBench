@@ -11,7 +11,7 @@ breakpoint_serial:
                  wl: synbench,
                  profile_name: high,
                  init_cmd: ./init.sh synbench ,
-                 start_cmd: cd GenVT_Env/synbench && ./synbench_guest.sh ,
+                 start_cmd: ./synbench.sh , #'cd ${HOME}/GenVT_Env/synbench && ./Gen_VT.sh &' ,
                  stop_cmd: null,
                  instances: 1,
                 }
