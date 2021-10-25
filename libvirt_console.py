@@ -115,7 +115,7 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
 #                os.system("python3 genvt_ssh.py 'cd ${HOME}/GenVT_Env/synbench/ && ./mqtt_build.sh'")
 #
 #                os.system("python3 genvt_ssh.py 'cd ${HOME}/GenVT_Env/synbench/ && ./synbench_build.sh'")
-                os.system(f"{start_cmd}")
+#                os.system(f"{start_cmd}")
 #                console.stream.send(b"sudo [ ! -d '/home/wlc/test' ] && mkdir test && cd test\n")
 #                console.stream.send(b"sudo cp /mnt/Gen_VT.sh .\n")
 #                for i in range(0,2):
@@ -127,8 +127,8 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
 #                console.stream.send(b"\n")                
                 login_data.clear()
                 stream_callback.cmd_flag = 2
-#                console.run_console = False
-#                return
+                console.run_console = False
+                return
 
 
 
